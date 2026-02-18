@@ -1,0 +1,19 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: store-health-check
+  namespace: default
+spec:
+  targetRef:
+    group: ""
+    kind: Service
+    name: store-service
+  default:
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 2
+    unhealthyThreshold: 3
+    config:
+      type: HTTP
+      httpHealthCheck:
+        requestPath: "/"
