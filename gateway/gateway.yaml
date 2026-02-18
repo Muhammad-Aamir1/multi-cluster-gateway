@@ -1,0 +1,41 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: global-gateway
+  namespace: default
+  annotations:
+    networking.gke.io/certmap: store-cert
+spec:
+  gatewayClassName: gke-l7-global-external-managed-mc
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      options:
+        networking.gke.io/pre-shared-certs: store-cert
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: store-route
+  namespace: default
+spec:
+  parentRefs:
+  - name: global-gateway
+  rules:
+  - backendRefs:
+    - group: net.gke.io
+      kind: ServiceImport
+      name: store-service
+      port: 80
