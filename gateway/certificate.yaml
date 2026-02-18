@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: store-cert
+  namespace: default
+spec:
+  domains:
+    - free.example.com  # UPDATE THIS
